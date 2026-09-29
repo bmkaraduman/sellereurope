@@ -46,12 +46,13 @@ export function computeBreakdown(
   const vatNet = round2(outputVat - inputVat);
 
   const overhead = rules.overhead;
-  const profit = round2(salePrice - sourceCost - sourceShipping - referralFee - otherFees - vatNet - overhead);
+  const outboundShipping = rules.outboundShipping;
+  const profit = round2(salePrice - sourceCost - sourceShipping - outboundShipping - referralFee - otherFees - vatNet - overhead);
   const marginPercent = salePrice > 0 ? round2((profit / salePrice) * 100) : 0;
-  const cost = sourceCost + sourceShipping;
+  const cost = sourceCost + sourceShipping + outboundShipping;
   const roiPercent = cost > 0 ? round2((profit / cost) * 100) : 0;
 
-  return { salePrice, sourceCost: round2(sourceCost), sourceShipping: round2(sourceShipping), referralFee, otherFees, vatNet, overhead, profit, marginPercent, roiPercent };
+  return { salePrice, sourceCost: round2(sourceCost), sourceShipping: round2(sourceShipping), outboundShipping, referralFee, otherFees, vatNet, overhead, profit, marginPercent, roiPercent };
 }
 
 export function decide(

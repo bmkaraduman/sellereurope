@@ -12,6 +12,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <Link href="/" style={{ color: "#cbd5e1" }}>Dashboard</Link>
           <Link href="/analyses" style={{ color: "#cbd5e1" }}>Analyses</Link>
           <Link href="/listings" style={{ color: "#cbd5e1" }}>Listings</Link>
+          <Link href="/orders" style={{ color: "#cbd5e1" }}>Orders</Link>
           <Link href="/stores" style={{ color: "#cbd5e1" }}>Stores</Link>
         </header>
         <main style={{ padding: 24, maxWidth: 1200, margin: "0 auto" }}>{children}</main>

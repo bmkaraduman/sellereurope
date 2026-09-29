@@ -6,6 +6,11 @@ arasında çalışır: örneğin amazon.it'te bulduğun ürünü, amazon.de'de v
 kaç paraya satılıyor, komisyon ve KDV sonrası kâr bırakıyor mu diye kontrol
 eder; kurallara uyuyorsa Almanya mağazana tek tıkla listeler.
 
+Sipariş geldiğinde ürün kaynak pazardan **kendi deponuza** alınır, yeniden
+paketlenip **kendi etiketinizle** alıcıya gönderilir; takip numarası Amazon'a
+`confirmShipment` ile bildirilir. Kâr hesabı depo→müşteri kargo ve paketleme
+maliyetini içerir.
+
 ## Bileşenler
 
 - `apps/extension` – Chrome eklentisi (MV3). Amazon EU ürün sayfasında "Analyse" → karar + kâr dökümü → "List on target".

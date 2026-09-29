@@ -26,10 +26,11 @@ function render(a: AnalyzeResponse) {
   const rows = b ? `
     <table>
       <tr><td>Sale price (${a.targetMarketplace})</td><td>${b.salePrice.toFixed(2)}</td></tr>
-      <tr><td>Source cost + shipping</td><td>${(b.sourceCost + b.sourceShipping).toFixed(2)}</td></tr>
+      <tr><td>Source cost + shipping to depot</td><td>${(b.sourceCost + b.sourceShipping).toFixed(2)}</td></tr>
+      <tr><td>Depot → customer shipping</td><td>${b.outboundShipping.toFixed(2)}</td></tr>
       <tr><td>Amazon fees</td><td>${(b.referralFee + b.otherFees).toFixed(2)}</td></tr>
       <tr><td>VAT (net)</td><td>${b.vatNet.toFixed(2)}</td></tr>
-      <tr><td>Overhead</td><td>${b.overhead.toFixed(2)}</td></tr>
+      <tr><td>Packaging / handling</td><td>${b.overhead.toFixed(2)}</td></tr>
       <tr><td><b>Profit</b></td><td><b>${b.profit.toFixed(2)} (${b.marginPercent}% / ROI ${b.roiPercent}%)</b></td></tr>
     </table>` : "";
   $("result").innerHTML = `

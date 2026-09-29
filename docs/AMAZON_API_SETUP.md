@@ -99,16 +99,30 @@ Bu yüzden SellerEurope, kaynak tarafı **tarayıcı eklentisiyle sayfadan okuyo
 hedef tarafı ise SP-API'den alıyor. PA-API onayı alırsan `packages/` altına bir
 kaynak sağlayıcı eklemek kolaydır.
 
-## 9. Dikkat edilmesi gereken hukuki / politika konuları
+## 9. Sipariş akışı ve dikkat edilmesi gerekenler
 
-- Amazon'un **dropshipping politikası**: siparişte "seller of record" sen
-  olmalısın; paketin üstünde başka bir perakendecinin (Amazon dahil) fişi/etiketi
-  olamaz. Amazon'dan Amazon'a göndermek bu politikaya aykırıdır ve hesabı
-  askıya aldırabilir. SellerFlash/SellerRunning kullanıcıları da bu riski taşır.
-  Alternatif: kaynak siparişi "hediye" seçeneğiyle vermek riski azaltır ama
-  ortadan kaldırmaz; en güvenlisi 3PL/ara depo (prep center) kullanmaktır.
-- **KDV (OSS)**: AB içi B2C uzaktan satışlarda 10.000 € eşiğini geçince hedef
-  ülkenin KDV'si uygulanır; **OSS** kaydı yaptır. `Store.vatRegistered` ayarı
-  kâr hesabında bunu dikkate alır.
-- **Fiyat paritesi / marka kısıtları**: Listings Restrictions API kısıtlı
-  ASIN'leri otomatik eler.
+SellerEurope **kendi depo** modeliyle çalışır: sipariş hedef mağazaya düşer,
+ürünü kaynak pazardan **kendi deponuza** alırsınız, yeniden paketleyip **kendi
+etiketinizle** gerçek alıcıya gönderirsiniz. Böylece:
+
+- **Seller of record** sizsiniz, pakette başka perakendecinin fişi olmaz →
+  Amazon'un dropshipping politikasına uyumludur.
+- `confirmShipment` ile kendi kargo firmanız + takip numaranız Amazon'a
+  bildirilir (`POST /orders/:id/ship`).
+- Handling time gerçekçi olmalı: kaynak teslimat (1–3 gün) + depo işlem + çıkış
+  kargosu. Varsayılan **5 gün**; geç gönderim oranı %4'ü aşarsa hesap
+  sağlığı etkilenir.
+
+PII (alıcı adresi) için developer profilinde **Direct-to-Consumer Shipping**
+rolünü ve PII erişimini açmanız gerekir; aksi halde Orders API adres
+alanlarını boş döndürür. Bu rol için Amazon veri güvenliği anketi ister
+(şifreleme, erişim logu, 30 gün sonra silme). Küçük ölçek için kabul edilebilir
+cevaplar: veriler şifreli PostgreSQL'de, sadece sipariş süresince, tek kullanıcı.
+
+**KDV (OSS)**: AB içi B2C uzaktan satışlarda 10.000 € eşiğini geçince hedef
+ülkenin KDV'si uygulanır; **OSS** kaydı yaptırın. `Store.vatRegistered` ayarı
+kâr hesabında girdi KDV'sini mahsup eder.
+
+**Kâr hesabında kargo**: kaynaktan depoya kargo genelde Prime ile ücretsizdir
+(`sourceShipping`), depodan müşteriye kargo (`outboundShipping`, ör. DE içi
+DHL Paket ~5,5 €) mağaza ayarından girilir ve her analizde düşülür.

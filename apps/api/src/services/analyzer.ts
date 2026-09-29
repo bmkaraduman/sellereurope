@@ -67,6 +67,7 @@ export async function analyzeProduct(
 export function rulesFromStore(store: {
   minProfit: number; minMarginPercent: number; maxSourcePrice: number | null; requireSourcePrime: boolean;
   skipIfAmazonSells: boolean; skipIfRestricted: boolean; priceFactor: number; overhead: number; vatRegistered: boolean;
+  outboundShipping: number; depotCountry: string;
 }): StoreRules {
   return {
     minProfit: store.minProfit,
@@ -77,6 +78,8 @@ export function rulesFromStore(store: {
     skipIfRestricted: store.skipIfRestricted,
     priceFactor: store.priceFactor,
     overhead: store.overhead,
+    outboundShipping: store.outboundShipping,
+    depotCountry: store.depotCountry,
     vatRegistered: store.vatRegistered,
   };
 }

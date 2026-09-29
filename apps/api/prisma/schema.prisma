@@ -19,9 +19,12 @@ model Store {
   skipIfAmazonSells Boolean   @default(true)
   skipIfRestricted  Boolean   @default(true)
   priceFactor       Float     @default(0.99)
-  overhead          Float     @default(0.5)
+  overhead          Float     @default(1.0)
+  outboundShipping  Float     @default(5.5)
+  depotCountry      String    @default("DE")
   vatRegistered     Boolean   @default(false)
-  handlingDays      Int       @default(3)
+  /// Source delivery to depot + relabel + outbound; keep realistic, Amazon measures late shipments.
+  handlingDays      Int       @default(5)
   createdAt         DateTime  @default(now())
   analyses          Analysis[]
   listings          Listing[]
@@ -95,7 +98,16 @@ model Order {
   currency       String?
   purchaseDate   DateTime
   raw            Json
-  /// Order id placed on the source marketplace once fulfilled.
+  /// Fulfilment pipeline: NEW -> SOURCE_ORDERED -> AT_DEPOT -> SHIPPED -> DELIVERED
+  fulfillment    String   @default("NEW")
+  /// Order id placed on the source marketplace (shipped to your depot).
   sourceOrderId  String?
+  sourceCost     Float?
+  depotReceivedAt DateTime?
+  /// Your own label to the end customer.
+  carrier        String?
+  trackingNumber String?
+  shippedAt      DateTime?
   createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }

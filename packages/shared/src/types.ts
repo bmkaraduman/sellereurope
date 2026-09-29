@@ -48,7 +48,10 @@ export interface ProfitBreakdown {
   salePrice: number;
   /** Cost of buying on source, converted to target currency. */
   sourceCost: number;
+  /** Shipping from source seller to your depot (usually 0 with Prime). */
   sourceShipping: number;
+  /** Shipping from your depot to the end customer, with your own label. */
+  outboundShipping: number;
   referralFee: number;
   otherFees: number;
   /** VAT you owe on the sale (output VAT) minus input VAT you can reclaim (if VAT-registered). */
@@ -80,8 +83,12 @@ export interface StoreRules {
   skipIfRestricted: boolean;
   /** Multiply the best target price by this to undercut, e.g. 0.98 */
   priceFactor: number;
-  /** Fixed overhead per order in target currency. */
+  /** Packaging / relabelling / handling cost per order in target currency. */
   overhead: number;
+  /** Average cost of shipping one parcel from your depot to a customer in the target country. */
+  outboundShipping: number;
+  /** Country where your depot is (ISO code), used for docs/routing; shipping cost is `outboundShipping`. */
+  depotCountry: string;
   /** true when you are VAT registered and can reclaim input VAT. */
   vatRegistered: boolean;
 }
@@ -93,6 +100,8 @@ export const DEFAULT_RULES: StoreRules = {
   skipIfAmazonSells: true,
   skipIfRestricted: true,
   priceFactor: 0.99,
-  overhead: 0.5,
+  overhead: 1.0,
+  outboundShipping: 5.5,
+  depotCountry: "DE",
   vatRegistered: false,
 };

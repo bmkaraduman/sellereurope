@@ -11,6 +11,8 @@ async function createStore(formData: FormData) {
       targetMarketplace: String(formData.get("targetMarketplace")),
       minProfit: Number(formData.get("minProfit")),
       minMarginPercent: Number(formData.get("minMarginPercent")),
+      outboundShipping: Number(formData.get("outboundShipping")),
+      depotCountry: String(formData.get("depotCountry")),
       vatRegistered: formData.get("vatRegistered") === "on",
     }),
   });
@@ -31,18 +33,20 @@ export default async function Stores() {
         </label>
         <label>Min profit<br /><input name="minProfit" type="number" step="0.01" defaultValue={3} /></label>
         <label>Min margin %<br /><input name="minMarginPercent" type="number" step="0.1" defaultValue={15} /></label>
+        <label>Depot country<br /><input name="depotCountry" defaultValue="DE" maxLength={2} style={{ width: 50 }} /></label>
+        <label>Depot → customer shipping<br /><input name="outboundShipping" type="number" step="0.1" defaultValue={5.5} /></label>
         <label><input name="vatRegistered" type="checkbox" /> VAT registered</label>
         <button type="submit">Create store</button>
       </form>
       <table style={{ width: "100%", borderCollapse: "collapse", background: "#fff", fontSize: 13, marginTop: 16 }}>
         <thead><tr style={{ textAlign: "left", background: "#e2e8f0" }}>
-          <th style={{ padding: 8 }}>ID (paste into extension)</th><th>Name</th><th>Target</th><th>Min profit</th><th>Min margin</th><th>Price factor</th>
+          <th style={{ padding: 8 }}>ID (paste into extension)</th><th>Name</th><th>Target</th><th>Min profit</th><th>Min margin</th><th>Depot</th><th>Outbound ship</th>
         </tr></thead>
         <tbody>
           {stores.map((s) => (
             <tr key={s.id} style={{ borderTop: "1px solid #e2e8f0" }}>
               <td style={{ padding: 8, fontFamily: "monospace" }}>{s.id}</td>
-              <td>{s.name}</td><td>{s.targetMarketplace}</td><td>{s.minProfit}</td><td>{s.minMarginPercent}%</td><td>{s.priceFactor}</td>
+              <td>{s.name}</td><td>{s.targetMarketplace}</td><td>{s.minProfit}</td><td>{s.minMarginPercent}%</td><td>{s.depotCountry}</td><td>{s.outboundShipping}</td>
             </tr>
           ))}
         </tbody>

@@ -14,6 +14,8 @@ const storeSchema = z.object({
   skipIfRestricted: z.boolean().optional(),
   priceFactor: z.number().optional(),
   overhead: z.number().optional(),
+  outboundShipping: z.number().min(0).optional(),
+  depotCountry: z.string().length(2).optional(),
   vatRegistered: z.boolean().optional(),
   handlingDays: z.number().int().optional(),
 });

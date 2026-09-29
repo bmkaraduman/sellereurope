@@ -12,7 +12,7 @@
                                                │
                                         ┌──────▼─────────┐
                                         │  apps/web      │  panel: mağazalar, analizler,
-                                        │  Next.js       │  listelemeler, siparişler
+                                        │  Next.js       │  listelemeler, sipariş/depo akışı
                                         └────────────────┘
 ```
 
@@ -32,7 +32,7 @@
 2. Kaynak stokta değil / Prime değil / Amazon hedefte kendisi satıyor → **SKIP**
 3. Hedefte hiç fiyat sinyali yoksa → **MANUAL_REVIEW**
 4. Satış fiyatı = (buy box ya da en düşük teklif) × `priceFactor`
-5. Kâr = satış − kaynak maliyet − kargo − Amazon komisyonu − net KDV − sabit gider
+5. Kâr = satış − kaynak maliyet − kaynak→depo kargo − depo→müşteri kargo − Amazon komisyonu − net KDV − paketleme
 6. Kâr ≥ `minProfit` ve marj ≥ `minMarginPercent` → **LIST**, değilse **SKIP**
 7. Kısıtlı ASIN: `skipIfRestricted` ise SKIP, değilse MANUAL_REVIEW
 
@@ -40,7 +40,9 @@
 
 - [ ] Repricer: `Listing` tablosundaki ürünlerin hedef fiyatını periyodik yenile (cron + `patchPriceAndQuantity`)
 - [ ] Kaynak stok/fiyat takibi: eklenti ya da headless tarayıcıyla kaynak sayfayı yeniden kazı, fiyat yükseldiyse stoğu 0'a çek
-- [ ] Sipariş akışı: `/orders/sync` → kaynak pazarda satın alma (manuel ya da yarı otomatik) → `sourceOrderId` + kargo takip → Orders API `confirmShipment`
+- [x] Sipariş akışı (depo modeli): `/orders/sync` → `source-ordered` → `received` → `ship` (Orders API `confirmShipment`)
+- [ ] Kaynak siparişini yarı otomatik verme (eklenti sepete ekleme + depo adresi otomatik doldurma)
+- [ ] Kargo etiketi üretimi (DHL / DPD / GLS API) ve takip numarasını otomatik geri yazma
 - [ ] Canlı döviz kuru (ECB) – `STATIC_FX` yerine
 - [ ] Toplu tarama: arama/kategori sayfalarından çoklu ASIN toplama
 - [ ] Çoklu kullanıcı / auth (şu an tek `API_TOKEN`)

@@ -10,7 +10,7 @@ const product: ScrapedProduct = {
 };
 
 test("profitable item gets LIST", () => {
-  const target: TargetSnapshot = { targetMarketplace: "DE", asinExists: true, buyBoxPrice: 45, currency: "EUR", referralFee: 6.68, restrictions: [], amazonSells: false };
+  const target: TargetSnapshot = { targetMarketplace: "DE", asinExists: true, buyBoxPrice: 55, currency: "EUR", referralFee: 8.17, restrictions: [], amazonSells: false };
   const r = decide(product, target, DEFAULT_RULES);
   assert.equal(r.decision, "LIST");
   assert.ok(r.breakdown!.profit > 3);
@@ -31,4 +31,11 @@ test("VAT is computed on target rate", () => {
   const target: TargetSnapshot = { targetMarketplace: "DE", asinExists: true, buyBoxPrice: 119, currency: "EUR", restrictions: [] };
   const b = computeBreakdown(product, target, 119, { ...DEFAULT_RULES, vatRegistered: false });
   assert.equal(b.vatNet, 19);
+});
+
+test("outbound shipping from own depot is deducted", () => {
+  const target: TargetSnapshot = { targetMarketplace: "DE", asinExists: true, buyBoxPrice: 50, currency: "EUR", referralFee: 7.5, restrictions: [] };
+  const base = computeBreakdown(product, target, 50, { ...DEFAULT_RULES, outboundShipping: 0 });
+  const withShip = computeBreakdown(product, target, 50, { ...DEFAULT_RULES, outboundShipping: 6 });
+  assert.equal(base.profit - withShip.profit, 6);
 });
