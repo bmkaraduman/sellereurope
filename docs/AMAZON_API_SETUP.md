@@ -14,21 +14,35 @@ tüm Avrupa mağazalarında çalışır.
    olarak öyle gelir; Almanya'dan açtıysan IT/FR/ES vs. otomatik dahildir).
 3. Seller Central'da kimlik doğrulaması tamamlanmış olmalı.
 
-## 2. Developer kaydı
+## 2. Developer kaydı (Solution Provider Portal)
 
-1. Seller Central → **Apps & Services → Develop Apps** (Uygulama Geliştir).
-2. "Register as a developer" / "Developer Profile" formunu doldur:
+Amazon, geliştirici kaydını Seller Central'dan **Solution Provider Portal**'a
+(SPP) taşıdı. Seller Central → Apps & Services → Develop Apps tıklayınca
+otomatik olarak SPP'ye yönlendirilirsin; bu normaldir.
+
+1. Seller Central'a **hesap sahibi (primary user)** e-postasıyla giriş yap.
+   İkincil kullanıcıyla girersen SPP "Keine Konten gefunden / No accounts
+   found" der. Aynı e-postayı SPP de kullanır.
+2. Seller Central → **Apps & Services → Develop Apps** → yönlendirmeyi bekle.
+   Doğrudan link: https://solutionprovider.amazon.com
+3. "Für das neue Programm registrieren" sayfasında satıcı hesabın (ör. Ankashop)
+   listelenir → seç → **Konto auswählen**. Listede yoksa "Verwenden Sie andere
+   Anmeldeinformationen" ile satıcı hesabının sahibi olan e-postayla tekrar gir.
+   **Konto erstellen'e basma**, gereksiz ikinci hesap açılır.
+4. Developer profili formu:
    - Developer type: **Private developer** (sadece kendi hesabın için).
    - Kullanacağın veri türleri: *Product Listing, Pricing, Inventory & Order Tracking*.
-   - "Do you access PII?" → siparişlerin adres bilgisini alacaksan **Yes**
-     (Direct-to-consumer shipping). PII için Amazon ek güvenlik soruları sorar;
-     ilk aşamada **No** de, sadece listeleme/fiyat için yeterlidir. Sipariş
-     adresi gerekince güncellersin.
-3. Onay genelde saatler–birkaç gün içinde gelir (private developer için hızlıdır).
+   - "Do you access PII?" → ilk aşamada **No**. Sipariş adresleri gerekince
+     profili güncelleyip *Direct-to-Consumer Shipping* rolü eklersin.
+5. Onay genelde saatler–birkaç gün içinde gelir.
+
+> Hesap sağlığı "At risk" görünüyorsa önce onu düzelt. Amazon riskli
+> hesaplarda developer onayını bekletebilir ve SP-API ile açılan listelemeler
+> hesabı daha da zorlar.
 
 ## 3. Uygulama (app) oluştur ve LWA kimlik bilgilerini al
 
-1. Develop Apps → **Add new app client**.
+1. SPP → **Apps** menüsü → **Add new app client** (Neuen App-Client hinzufügen).
 2. App name: `sellereurope`, API type: **SP API**.
 3. Roles (izinler) — şunları işaretle:
    - **Product Listing** (Listings Items, Catalog, Product Type Definitions)
@@ -43,7 +57,7 @@ tüm Avrupa mağazalarında çalışır.
 
 Kendi hesabın için uygulamayı **self-authorize** edersin, OAuth akışına gerek yok:
 
-1. Develop Apps sayfasında uygulamanın yanındaki **Authorize** butonuna bas.
+1. SPP → Apps sayfasında uygulamanın yanındaki **Authorize** butonuna bas.
 2. Ekranda çıkan **Refresh Token**'ı kopyala → `SP_API_REFRESH_TOKEN`.
    Bu token uzun ömürlüdür (iptal etmediğin sürece geçerli).
 
