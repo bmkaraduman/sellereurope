@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "SellerEurope",
+  "version": "0.1.0",
+  "description": "Analyse Amazon EU products for cross-border listing and push them to your target store.",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": [
+    "https://*.amazon.de/*", "https://*.amazon.fr/*", "https://*.amazon.it/*", "https://*.amazon.es/*",
+    "https://*.amazon.nl/*", "https://*.amazon.se/*", "https://*.amazon.pl/*", "https://*.amazon.com.be/*",
+    "https://*.amazon.ie/*", "https://*.amazon.co.uk/*", "http://localhost/*", "https://*/*"
+  ],
+  "background": { "service_worker": "background.js", "type": "module" },
+  "action": { "default_popup": "popup.html", "default_title": "SellerEurope" },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.amazon.de/*", "https://*.amazon.fr/*", "https://*.amazon.it/*", "https://*.amazon.es/*",
+        "https://*.amazon.nl/*", "https://*.amazon.se/*", "https://*.amazon.pl/*", "https://*.amazon.com.be/*",
+        "https://*.amazon.ie/*", "https://*.amazon.co.uk/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

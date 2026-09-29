@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.next/
+*.log
+.env
+.env.local
+.env.*.local
+apps/extension/dist/
+prisma/*.db
+.DS_Store

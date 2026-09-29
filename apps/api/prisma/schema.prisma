@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// A target marketplace store (e.g. your amazon.de storefront) with its rules.
+model Store {
+  id                String    @id @default(cuid())
+  name              String
+  targetMarketplace String    // "DE", "FR", ...
+  minProfit         Float     @default(3)
+  minMarginPercent  Float     @default(15)
+  maxSourcePrice    Float?
+  requireSourcePrime Boolean  @default(true)
+  skipIfAmazonSells Boolean   @default(true)
+  skipIfRestricted  Boolean   @default(true)
+  priceFactor       Float     @default(0.99)
+  overhead          Float     @default(0.5)
+  vatRegistered     Boolean   @default(false)
+  handlingDays      Int       @default(3)
+  createdAt         DateTime  @default(now())
+  analyses          Analysis[]
+  listings          Listing[]
+}
+
+/// Raw product data captured by the extension on a source marketplace.
+model SourceProduct {
+  id                String    @id @default(cuid())
+  asin              String
+  sourceMarketplace String
+  title             String
+  price             Float
+  currency          String
+  shipping          Float     @default(0)
+  inStock           Boolean
+  isPrime           Boolean
+  soldBy            String
+  imageUrl          String?
+  brand             String?
+  url               String
+  scrapedAt         DateTime
+  analyses          Analysis[]
+
+  @@index([asin, sourceMarketplace])
+}
+
+/// Outcome of comparing a source product against a target store.
+model Analysis {
+  id              String        @id @default(cuid())
+  storeId         String
+  store           Store         @relation(fields: [storeId], references: [id])
+  sourceProductId String
+  sourceProduct   SourceProduct @relation(fields: [sourceProductId], references: [id])
+  decision        String        // LIST | SKIP | MANUAL_REVIEW
+  reasons         String[]
+  salePrice       Float?
+  profit          Float?
+  marginPercent   Float?
+  targetSnapshot  Json
+  breakdown       Json?
+  createdAt       DateTime      @default(now())
+  listing         Listing?
+
+  @@index([storeId, decision])
+}
+
+/// An offer we actually pushed to Amazon.
+model Listing {
+  id          String   @id @default(cuid())
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id])
+  analysisId  String   @unique
+  analysis    Analysis @relation(fields: [analysisId], references: [id])
+  sku         String   @unique
+  asin        String
+  price       Float
+  quantity    Int      @default(1)
+  status      String   @default("PENDING") // PENDING | ACTIVE | ERROR | DELETED
+  spApiResponse Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+/// Orders imported from the target marketplace (to be fulfilled from source).
+model Order {
+  id             String   @id @default(cuid())
+  amazonOrderId  String   @unique
+  marketplace    String
+  status         String
+  total          Float?
+  currency       String?
+  purchaseDate   DateTime
+  raw            Json
+  /// Order id placed on the source marketplace once fulfilled.
+  sourceOrderId  String?
+  createdAt      DateTime @default(now())
+}
