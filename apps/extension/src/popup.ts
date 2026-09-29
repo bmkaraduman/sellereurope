@@ -1,13 +1,32 @@
-import type { ScrapedProduct } from "@sellereurope/shared";
+import { marketplaceByDomain, type ScanItem, type ScrapedProduct } from "@sellereurope/shared";
 import { getSettings, type AnalyzeResponse, type Msg, type Settings } from "./messages.ts";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 let product: ScrapedProduct | null = null;
 let lastAnalysis: AnalyzeResponse | null = null;
+let listItems: ScanItem[] = [];
+let listLabel = "";
+let listMarketplace = "";
 
 async function activeTab() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   return tab;
+}
+
+async function loadListPage() {
+  const tab = await activeTab();
+  if (!tab?.id || !tab.url) return;
+  try {
+    const res = await chrome.tabs.sendMessage(tab.id, { type: "SCRAPE_LIST" } satisfies Msg);
+    listItems = res?.items ?? [];
+    listLabel = res?.label ?? "";
+    listMarketplace = marketplaceByDomain(new URL(tab.url).hostname)?.code ?? "";
+  } catch { listItems = []; }
+  if (listItems.length) {
+    const priced = listItems.filter((i) => i.price).length;
+    $("listInfo").innerHTML = `<b>${listItems.length}</b> products on this page (${priced} with price) · ${listMarketplace}<br><span class="muted">${listLabel}</span>`;
+    ($("scan") as HTMLButtonElement).disabled = false;
+  }
 }
 
 async function loadProduct() {
@@ -58,15 +77,27 @@ $("list").addEventListener("click", async () => {
   $("result").insertAdjacentHTML("beforeend", res.ok ? `<p>Listing ${res.data.sku}: <b>${res.data.status}</b></p>` : `<p>Error: ${res.error}</p>`);
 });
 
+$("scan").addEventListener("click", async () => {
+  const s = await getSettings();
+  if (!s.storeId) { $("scanResult").textContent = "Set a Store ID in settings first."; return; }
+  ($("scan") as HTMLButtonElement).disabled = true;
+  $("scanResult").textContent = `Sending ${listItems.length} products…`;
+  const res = await chrome.runtime.sendMessage({ type: "SCAN", items: listItems, sourceMarketplace: listMarketplace, sourceLabel: listLabel, storeId: s.storeId } satisfies Msg);
+  if (!res.ok) { $("scanResult").textContent = `Error: ${res.error}`; ($("scan") as HTMLButtonElement).disabled = false; return; }
+  $("scanResult").innerHTML = `Scan started (${res.data.total} items). <a href="${s.dashboardUrl}/scans/${res.data.scanId}" target="_blank">Open results in dashboard</a>`;
+});
+
 $("save").addEventListener("click", async () => {
-  const s: Settings = { apiUrl: ($("apiUrl") as HTMLInputElement).value, apiToken: ($("apiToken") as HTMLInputElement).value, storeId: ($("storeId") as HTMLInputElement).value };
+  const s: Settings = { apiUrl: ($("apiUrl") as HTMLInputElement).value, dashboardUrl: ($("dashboardUrl") as HTMLInputElement).value, apiToken: ($("apiToken") as HTMLInputElement).value, storeId: ($("storeId") as HTMLInputElement).value };
   await chrome.storage.sync.set(s);
 });
 
 (async () => {
   const s = await getSettings();
   ($("apiUrl") as HTMLInputElement).value = s.apiUrl;
+  ($("dashboardUrl") as HTMLInputElement).value = s.dashboardUrl;
   ($("apiToken") as HTMLInputElement).value = s.apiToken;
   ($("storeId") as HTMLInputElement).value = s.storeId;
   await loadProduct();
+  await loadListPage();
 })();

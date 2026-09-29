@@ -15,6 +15,8 @@ chrome.runtime.onMessage.addListener((msg: Msg, _sender, sendResponse) => {
     try {
       if (msg.type === "ANALYZE") {
         sendResponse({ ok: true, data: await api("/analyze", { method: "POST", body: JSON.stringify({ storeId: msg.storeId, product: msg.product }) }) });
+      } else if (msg.type === "SCAN") {
+        sendResponse({ ok: true, data: await api("/scans", { method: "POST", body: JSON.stringify({ storeId: msg.storeId, sourceMarketplace: msg.sourceMarketplace, sourceLabel: msg.sourceLabel, items: msg.items }) }) });
       } else if (msg.type === "LIST") {
         sendResponse({ ok: true, data: await api("/listings", { method: "POST", body: JSON.stringify({ analysisId: msg.analysisId }) }) });
       }

@@ -6,3 +6,4 @@ export * from "./fees.ts";
 export * from "./restrictions.ts";
 export * from "./listings.ts";
 export * from "./orders.ts";
+export * from "./batch.ts";

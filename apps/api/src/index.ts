@@ -6,6 +6,7 @@ import { analyzeRoutes } from "./routes/analyze.ts";
 import { listingRoutes } from "./routes/listings.ts";
 import { storeRoutes } from "./routes/stores.ts";
 import { orderRoutes } from "./routes/orders.ts";
+import { scanRoutes } from "./routes/scans.ts";
 
 const app = Fastify({ logger: true });
 await app.register(cors, { origin: true });
@@ -24,6 +25,7 @@ await storeRoutes(app);
 await analyzeRoutes(app, spApi);
 await listingRoutes(app, spApi);
 await orderRoutes(app, spApi);
+await scanRoutes(app, spApi);
 
 app.listen({ port: env.port, host: "0.0.0.0" }).catch((err) => {
   app.log.error(err);

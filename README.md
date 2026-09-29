@@ -34,6 +34,11 @@ pnpm build:extension            # chrome://extensions -> Load unpacked -> apps/e
 Panelde bir mağaza oluştur (ör. "DE store", hedef: DE), ID'sini eklenti
 ayarlarına yapıştır, amazon.it'te bir ürün aç, "Analyse for my store".
 
+**Toplu tarama:** amazon.it'te bir arama, kategori ya da Bestseller sayfası aç,
+eklentide "Scan this page" de. Sayfadaki tüm ürünler hedef mağazada 20'li
+paketler halinde kontrol edilir; sonuçlar panelde **Scans** altında çıkar,
+kârlı olanları seçip tek tıkla listelersin.
+
 ## Testler
 
 ```bash

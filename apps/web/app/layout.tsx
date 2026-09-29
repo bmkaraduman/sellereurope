@@ -10,6 +10,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <header style={{ background: "#1e293b", color: "#fff", padding: "12px 24px", display: "flex", gap: 20, alignItems: "center" }}>
           <strong>SellerEurope</strong>
           <Link href="/" style={{ color: "#cbd5e1" }}>Dashboard</Link>
+          <Link href="/scans" style={{ color: "#cbd5e1" }}>Scans</Link>
           <Link href="/analyses" style={{ color: "#cbd5e1" }}>Analyses</Link>
           <Link href="/listings" style={{ color: "#cbd5e1" }}>Listings</Link>
           <Link href="/orders" style={{ color: "#cbd5e1" }}>Orders</Link>

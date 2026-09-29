@@ -105,3 +105,26 @@ export const DEFAULT_RULES: StoreRules = {
   depotCountry: "DE",
   vatRegistered: false,
 };
+
+/** Lightweight product card captured from a search / category / bestseller page. */
+export interface ScanItem {
+  asin: string;
+  title: string;
+  price?: number;
+  currency: string;
+  isPrime: boolean;
+  rating?: number;
+  reviewCount?: number;
+  imageUrl?: string;
+  url: string;
+}
+
+export interface ScanRequest {
+  storeId: string;
+  sourceMarketplace: MarketplaceCode;
+  /** Where the items were collected from (search url, category name...). */
+  sourceLabel: string;
+  items: ScanItem[];
+}
+
+export type ScanStatus = "PENDING" | "RUNNING" | "DONE" | "ERROR";

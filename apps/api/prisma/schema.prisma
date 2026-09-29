@@ -28,6 +28,7 @@ model Store {
   createdAt         DateTime  @default(now())
   analyses          Analysis[]
   listings          Listing[]
+  scans             Scan[]
 }
 
 /// Raw product data captured by the extension on a source marketplace.
@@ -51,11 +52,30 @@ model SourceProduct {
   @@index([asin, sourceMarketplace])
 }
 
+/// A bulk scan: many ASINs collected from a source list page, checked against one store.
+model Scan {
+  id                String     @id @default(cuid())
+  storeId           String
+  store             Store      @relation(fields: [storeId], references: [id])
+  sourceMarketplace String
+  sourceLabel       String
+  status            String     @default("PENDING") // PENDING | RUNNING | DONE | ERROR
+  total             Int
+  processed         Int        @default(0)
+  listCount         Int        @default(0)
+  error             String?
+  createdAt         DateTime   @default(now())
+  finishedAt        DateTime?
+  analyses          Analysis[]
+}
+
 /// Outcome of comparing a source product against a target store.
 model Analysis {
   id              String        @id @default(cuid())
   storeId         String
   store           Store         @relation(fields: [storeId], references: [id])
+  scanId          String?
+  scan            Scan?         @relation(fields: [scanId], references: [id])
   sourceProductId String
   sourceProduct   SourceProduct @relation(fields: [sourceProductId], references: [id])
   decision        String        // LIST | SKIP | MANUAL_REVIEW
@@ -69,6 +89,7 @@ model Analysis {
   listing         Listing?
 
   @@index([storeId, decision])
+  @@index([scanId])
 }
 
 /// An offer we actually pushed to Amazon.

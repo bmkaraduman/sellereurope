@@ -1,9 +1,12 @@
 import { scrapeCurrentPage } from "./scrape.ts";
+import { scrapeListPage } from "./scrapeList.ts";
 import type { Msg } from "./messages.ts";
 
 chrome.runtime.onMessage.addListener((msg: Msg, _sender, sendResponse) => {
   if (msg.type === "SCRAPE") {
     sendResponse(scrapeCurrentPage());
+  } else if (msg.type === "SCRAPE_LIST") {
+    sendResponse(scrapeListPage());
   }
   return true;
 });

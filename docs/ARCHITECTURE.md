@@ -22,7 +22,7 @@
 |---|---|
 | `packages/shared` | EU pazar yeri tablosu (marketplace id, domain, para birimi, KDV), tipler, **kâr motoru** (`decide()`), testler |
 | `packages/sp-api` | LWA token, HTTP istemcisi (429 retry), Catalog / Pricing / Fees / Restrictions / Listings / Orders sarmalayıcıları |
-| `apps/api` | REST API: `/stores`, `/analyze`, `/analyses`, `/listings`, `/orders/sync`. Prisma + PostgreSQL |
+| `apps/api` | REST API: `/stores`, `/analyze`, `/analyses`, `/scans`, `/listings`, `/listings/bulk`, `/orders/*`. Prisma + PostgreSQL |
 | `apps/extension` | MV3 eklenti: ürün sayfasını kazır, API'ye gönderir, popup'ta karar + kâr dökümünü gösterir, tek tıkla listeler |
 | `apps/web` | Next.js panel |
 
@@ -44,5 +44,5 @@
 - [ ] Kaynak siparişini yarı otomatik verme (eklenti sepete ekleme + depo adresi otomatik doldurma)
 - [ ] Kargo etiketi üretimi (DHL / DPD / GLS API) ve takip numarasını otomatik geri yazma
 - [ ] Canlı döviz kuru (ECB) – `STATIC_FX` yerine
-- [ ] Toplu tarama: arama/kategori sayfalarından çoklu ASIN toplama
+- [x] Toplu tarama: arama/kategori/Bestseller sayfalarından ASIN toplama → `/scans` (20'li batch Catalog + Pricing + Fees, arka planda) → panelde filtrele, seç, toplu listele
 - [ ] Çoklu kullanıcı / auth (şu an tek `API_TOKEN`)
