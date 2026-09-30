@@ -72,9 +72,15 @@ Seller Central → **Settings → Account Info → Your Merchant Token** →
 
 ## 6. `.env` doldur ve test et
 
+> **Güvenlik:** Client Secret ve refresh token'ı hiçbir sohbete, e-postaya
+> ya da git'e yazma. Sadece `.env` dosyasında tut (`.gitignore`'da). Yanlışlıkla
+> paylaştıysan SPP → Autorisierungen → Selbstautorisierungen → **Widerrufen**,
+> sonra tekrar **App autorisieren** ile yeni token üret.
+
 ```bash
 cp .env.example .env   # değerleri gir
 pnpm install
+pnpm --filter @sellereurope/api check   # LWA + Sellers API ile bağlantıyı doğrular
 docker compose up -d   # postgres
 pnpm db:migrate
 pnpm dev:api
