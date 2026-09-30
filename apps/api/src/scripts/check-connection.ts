@@ -4,14 +4,19 @@
  *
  *   pnpm --filter @sellereurope/api check
  */
-import "dotenv/config";
+import { ENV_PATH } from "../loadEnv.ts";
 import { SpApiClient } from "@sellereurope/sp-api";
 import { marketplaceById } from "@sellereurope/shared";
 
 const need = ["SP_API_CLIENT_ID", "SP_API_CLIENT_SECRET", "SP_API_REFRESH_TOKEN", "SP_API_SELLER_ID"] as const;
 const missing = need.filter((k) => !process.env[k] || process.env[k]!.includes("xxxx"));
+if (!ENV_PATH) {
+  console.error("No .env file found. Create one in the repository root: cp .env.example .env");
+  process.exit(1);
+}
+console.log(`Using ${ENV_PATH}`);
 if (missing.length) {
-  console.error(`Missing in .env: ${missing.join(", ")}`);
+  console.error(`Still placeholder / missing in .env: ${missing.join(", ")}`);
   process.exit(1);
 }
 
